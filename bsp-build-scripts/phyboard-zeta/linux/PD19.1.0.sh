@@ -1,0 +1,1 @@
+../../phycore-imx7/linux/PD19.1.0.sh
