@@ -1,0 +1,24 @@
+name: Dockerfile test build
+
+on:
+    pull_request:
+      paths-ignore:
+      - '**.yml'
+      - 'README.md'
+ 
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker Login
+      uses: azure/docker-login@v1
+      with:
+        login-server: docker.pkg.github.com
+        username: $GITHUB_ACTOR
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile
