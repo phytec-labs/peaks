@@ -21,8 +21,8 @@ FROM ubuntu:16.04
 #set up our release labels
 LABEL vendor="PHYTEC"
 LABEL distribution="Peaks"
-LABEL description="PHYTEC Peaks Build System v1.0.0. A build system for building a subset of PHYTEC BSPS in a docker container"
-LABEL version="1.0.0"
+LABEL description="PHYTEC Peaks Build System. A build system for building a subset of PHYTEC BSPS in a docker container"
+LABEL version="1.0"
 LABEL version.codename="Rainier"
 
 # set up bash instead of dash
