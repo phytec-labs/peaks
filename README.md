@@ -38,22 +38,6 @@ If you would simply like to build a BSP in a docker container then all you need 
 9. You can detach from your build container (but keep the container running) by typing hitting ctrl and then hold P and press Q `ctrl P+Q`. Keep in mind that your container is most likely using a substantial amount of resources. You can re-attach to it at a later point (to do more builds if you want) by finding the container process ID or name - `docker ps` and then attaching to it by typing `docker attach {PID or container name}`
 10. **The Docker container is volatile! If you 'exit' or close your terminal without detaching from the container your work will be lost. You can 'commit' the state of the container to your local image. This will update your local image with the current snapshot. Keep in mind that this can take a long time if the size of the container is substantial (it will be fore some BSPs) **
 
-# Other uses of Peaks
-## Integrating Peaks With Your Development
-The included scripts will build the default PHYTEC BSP and image (for the target). Most of the time these will be targeted to PHYTEC development kits. Assuming you have developed your own hardware based on a PHYTEC reference design, you will most likely have your own software as well.
-
-### 1.Clone Peaks
-The easiest way is probably to clone Peaks and start maintaining your own build environment. You can simply start with the base BSP scripts and modify them to use your code bases instead of PHYTEC's. PHYTEC generally uses repo and manifests so you can simply create your own manifest (in your own repo) with your software. You could have a manifest file that points to  your development branches, include your repo ssh key or github token in the docker image (if your development branches are on a private server) and this would alow your build container to always build based off of a specified branch (instead of PHYTEC's).
-
-### 2.Develop your own BSP build scripts
-You can use the provided BSP build scripts as a base. Modify these scripts to suit your needs, rename them, etc. You can still use the Dockerfile if you wish as a base. 
-
-### 3.Commit your changes
-Commit your changes to your branch. You can set up GitHub Actions (like we have done here) or use your own CI to automatically build a the docker image. Otherwise you can follow the instructions below
-
-## Using Peaks As Your Development Machine
-It is possible to use the dockerized container as your main development machine. You will most likely want to commit the docker container to an image every so often so you don't loose your work. You can simply attach and detach from the container. One challenge will be accessing hardware but this is usually only necessary if you need to flash an SD card. To do this you can always send or copy your image files to your host machine to flash. If you are using Yocto, you can also set up a package repository inside your build machine and allow network access to the docker container to push out packages to your live hardware. 
-
 ## Developing a Build System with Peaks
 
 ## Why?
@@ -79,6 +63,22 @@ You can also fork (or base your docker image on the release image) this reposito
 15. Once finished you can export your built images by using any traditional method like scp, curl, etc. PHYTEC has an artifactory server and we use curl to push whatever artifacts we want up to the server and then download to whatever machine will be used to create the SD Card. You can also use the `docker cp` command on your host machine. 
 
 You can look at the github workflows on the master branch of this repo to see how we are automatically deploying docker images to a repository. 
+
+# Other uses of Peaks
+## Integrating Peaks With Your Development
+The included scripts will build the default PHYTEC BSP and image (for the target). Most of the time these will be targeted to PHYTEC development kits. Assuming you have developed your own hardware based on a PHYTEC reference design, you will most likely have your own software as well.
+
+### 1. Clone Peaks
+The easiest way is probably to clone Peaks and start maintaining your own build environment. You can simply start with the base BSP scripts and modify them to use your code bases instead of PHYTEC's. PHYTEC generally uses repo and manifests so you can simply create your own manifest (in your own repo) with your software. You could have a manifest file that points to  your development branches, include your repo ssh key or github token in the docker image (if your development branches are on a private server) and this would alow your build container to always build based off of a specified branch (instead of PHYTEC's).
+
+### 2. Develop your own BSP build scripts
+You can use the provided BSP build scripts as a base. Modify these scripts to suit your needs, rename them, etc. You can still use the Dockerfile if you wish as a base. 
+
+### 3. Commit your changes
+Commit your changes to your branch. You can set up GitHub Actions (like we have done here) or use your own CI to automatically build a the docker image. You now have a repository that you can use to do 'clean' builds of your BSPs. If you want to go further and use this environment for actual development you can continue reading. 
+
+## Using Peaks As Your Development Machine
+It is possible to use the dockerized container as your main development machine. You will most likely want to commit the docker container to an image every so often so you don't loose your work. You can simply attach and detach from the container. One challenge will be accessing hardware but this is usually only necessary if you need to flash an SD card. To do this you can always send or copy your image files to your host machine to flash. If you are using Yocto, you can also set up a package repository inside your build machine and allow network access to the docker container to push out packages to your live hardware. 
 
 # Having Issues?
 If you have issues, questions, etc. please create them in GitHub for this project!
