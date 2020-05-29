@@ -1,4 +1,4 @@
-[TL;DR Show me how to build ] (#-building-a-bsp)
+[TL;DR Show me how to build ] (#building-a-bsp)
 
 # Peaks
 Welcome to the Peaks project!  
