@@ -8,7 +8,7 @@
 
 #variables - these can be changed to build different images or machines
 MACHINE=phyboard-polis-imx8mm-2
-IMAGE=phytec-qt5demo-image
+IMAGE=phytec-headless-image
 BSP_VERSION=ALPHA2
 MANIFEST_URL=git://git.phytec.de/phy2octo
 MANIFEST_BRANCH=imx8mm
@@ -105,7 +105,6 @@ echo "" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "# Adding sublayer because of \"$RELEASE_UID\" release" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "BBLAYERS += \"\\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \${OEROOT}/../meta-browser \\" >> $YOCTO_DIR/build/conf/bblayers.conf
-echo "  \${OEROOT}/../meta-freescale \\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \${OEROOT}/../meta-freescale-3rdparty \\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \${OEROOT}/../meta-freescale-distro \\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \${OEROOT}/../meta-phytec \\" >> $YOCTO_DIR/build/conf/bblayers.conf
@@ -118,6 +117,7 @@ echo "  \${OEROOT}/../meta-openembedded/meta-gnome \\" >> $YOCTO_DIR/build/conf/
 echo "  \${OEROOT}/../meta-fsl-bsp-release/imx/meta-bsp \\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \${OEROOT}/../meta-fsl-bsp-release/imx/meta-sdk \\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \${OEROOT}/../meta-fsl-bsp-release/imx/meta-ml \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-freescale \\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \"" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "" >> $YOCTO_DIR/build/conf/bblayers.conf
 
@@ -130,12 +130,12 @@ cd $YOCTO_DIR/build/conf \
     && sed -i 's/DISTRO ?= "yogurt"/DISTRO ?= "yogurt-vendor" /g' local.conf \
 
 #fixup issue with FSL EULA
-cd $YOCTO_DIR/build/conf \
-    && echo FSL_EULA_FILE="${BSPDIR}/sources/meta-fsl-bsp-release/imx/EULA.txt" >> local.conf
+#cd $YOCTO_DIR/build/conf \
+#    && echo "FSL_EULA_FILE=\""\${BSPDIR}/sources/meta-fsl-bsp-release/imx/EULA.txt\""" >> local.conf
 
 #add the default build parallelization settings
-echo "PARALLEL_MAKE = "-j 16"" >>  $YOCTO_DIR/build/conf/local.conf
-echo "BB_NUMBER_THREADS = "16"" >>  $YOCTO_DIR/build/conf/local.conf
+echo "PARALLEL_MAKE = \""-j 16\""" >>  $YOCTO_DIR/build/conf/local.conf
+echo "BB_NUMBER_THREADS = \""16\""" >>  $YOCTO_DIR/build/conf/local.conf
 
 #increase open file descriptors for the build
 
