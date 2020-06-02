@@ -88,7 +88,7 @@ TEMPLATECONF=$YOCTO_DIR/sources/meta-phytec/conf MACHINE=phyboard-polis-imx8mm-2
 cd $YOCTO_DIR/build/conf \
     && sed -i '/downloads/d' $YOCTO_DIR/build/conf/local.conf \
     && echo "DL_DIR = \"/home/$USER_NAME/PHYTEC_BSPs/yocto_dl\"" >> $YOCTO_DIR/build/conf/local.conf
-    
+
 
 # add commented line in local.conf.sample (for easy acceptable NXP EULA)
 echo "" >> $YOCTO_DIR/build/conf/local.conf
@@ -99,8 +99,32 @@ echo "#ACCEPT_FSL_EULA = \"1\""  >> $YOCTO_DIR/build/conf/local.conf
 # add BSPDIR variable in bblayers.conf.sample (needed by recipes of NXP)
 sed -e '9iBSPDIR := "${OEROOT}/../.."' -i $YOCTO_DIR/build/conf/bblayers.conf
 
-# add further sublayer in bblayers.conf.sample
+# add additional layers to bblayers.conf #TODO - Fix this so it will not append everytime you run the script...
 
+echo "" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "# Adding sublayer because of \"$RELEASE_UID\" release" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "BBLAYERS += \"\\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-browswer \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-freescale \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-freescale-3rdparty \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-freescale-distro \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-phytec \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-qt5 \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-rauc \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-rust \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-timesys \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-yogurt \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-openembedded/meta-gnome \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-fsl-bsp-release/imx/meta-bsp \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-fsl-bsp-release/imx/meta-sdk \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-fsl-bsp-release/imx/meta-ml \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \"" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "" >> $YOCTO_DIR/build/conf/bblayers.conf
+
+
+#Fixup MACHINE
+cd $YOCTO_DIR/build/conf \
+        && sed -i 's/MACHINE ?= "UNASSIGNED"/MACHINE ?= "'"$MACHINE"'"" /g' local.conf \
 
 #remove the default build parallelization settings
 cd $YOCTO_DIR/build/conf \
