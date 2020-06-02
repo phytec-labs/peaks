@@ -80,31 +80,7 @@ fi
 # copy new EULA to meta-freescale
 cp ${ROOTDIR}/sources/meta-fsl-bsp-release/imx/EULA.txt ${ROOTDIR}/sources/meta-freescale/EULA
 
-# add commented line in local.conf.sample (for easy acceptable NXP EULA)
-echo "" >> ${PHYTEC_DIR}/conf/local.conf.sample
-echo "# Uncomment to accept NXP EULA" >> ${PHYTEC_DIR}/conf/local.conf.sample
-echo "# EULA can be found under ../sources/meta-freescale/EULA" >> ${PHYTEC_DIR}/conf/local.conf.sample
-echo "#ACCEPT_FSL_EULA = \"1\""  >> ${PHYTEC_DIR}/conf/local.conf.sample
-
-# add BSPDIR variable in bblayers.conf.sample (needed by recipes of NXP)
-sed -e '9iBSPDIR := "${OEROOT}/../.."' -i ${PHYTEC_DIR}/conf/bblayers.conf.sample
-
-# add further sublayer in bblayers.conf.sample
-echo "" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "# Adding sublayer because of \"$RELEASE_UID\" release" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "BBLAYERS += \"\\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \${OEROOT}/../meta-openembedded/meta-filesystems \\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \${OEROOT}/../meta-openembedded/meta-gnome \\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \${OEROOT}/../meta-fsl-bsp-release/imx/meta-bsp \\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \${OEROOT}/../meta-fsl-bsp-release/imx/meta-sdk \\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \${OEROOT}/../meta-fsl-bsp-release/imx/meta-ml \\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \${OEROOT}/../meta-yogurt \\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \${OEROOT}/../meta-phytec \\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \${OEROOT}/../meta-qt5 \\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \${OEROOT}/../meta-rauc \\" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "  \"" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-echo "" >> ${PHYTEC_DIR}/conf/bblayers.conf.sample
-
+#create our build directory with standard config from PHYTEC
 cd $YOCTO_DIR
 TEMPLATECONF=$YOCTO_DIR/sources/meta-phytec/conf MACHINE=phyboard-polis-imx8mm-2 DISTRO=yogurt-vendor-xwayland source sources/poky/oe-init-build-env
 
@@ -112,6 +88,18 @@ TEMPLATECONF=$YOCTO_DIR/sources/meta-phytec/conf MACHINE=phyboard-polis-imx8mm-2
 cd $YOCTO_DIR/build/conf \
     && sed -i '/downloads/d' $YOCTO_DIR/build/conf/local.conf \
     && echo "DL_DIR = \"/home/$USER_NAME/PHYTEC_BSPs/yocto_dl\"" >> $YOCTO_DIR/build/conf/local.conf
+    
+
+# add commented line in local.conf.sample (for easy acceptable NXP EULA)
+echo "" >> $YOCTO_DIR/build/conf/local.conf
+echo "# Uncomment to accept NXP EULA" >> $YOCTO_DIR/build/conf/local.conf
+echo "# EULA can be found under ../sources/meta-freescale/EULA" >> $YOCTO_DIR/build/conf/local.conf
+echo "#ACCEPT_FSL_EULA = \"1\""  >> $YOCTO_DIR/build/conf/local.conf
+
+# add BSPDIR variable in bblayers.conf.sample (needed by recipes of NXP)
+sed -e '9iBSPDIR := "${OEROOT}/../.."' -i $YOCTO_DIR/build/conf/bblayers.conf
+
+# add further sublayer in bblayers.conf.sample
 
 
 #remove the default build parallelization settings
