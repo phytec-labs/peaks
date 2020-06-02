@@ -104,7 +104,7 @@ sed -e '9iBSPDIR := "${OEROOT}/../.."' -i $YOCTO_DIR/build/conf/bblayers.conf
 echo "" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "# Adding sublayer because of \"$RELEASE_UID\" release" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "BBLAYERS += \"\\" >> $YOCTO_DIR/build/conf/bblayers.conf
-echo "  \${OEROOT}/../meta-browswer \\" >> $YOCTO_DIR/build/conf/bblayers.conf
+echo "  \${OEROOT}/../meta-browser \\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \${OEROOT}/../meta-freescale \\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \${OEROOT}/../meta-freescale-3rdparty \\" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "  \${OEROOT}/../meta-freescale-distro \\" >> $YOCTO_DIR/build/conf/bblayers.conf
@@ -124,12 +124,18 @@ echo "" >> $YOCTO_DIR/build/conf/bblayers.conf
 
 #Fixup MACHINE
 cd $YOCTO_DIR/build/conf \
-        && sed -i 's/MACHINE ?= "UNASSIGNED"/MACHINE ?= "'"$MACHINE"'"" /g' local.conf \
-
-#remove the default build parallelization settings
+    && sed -i 's/MACHINE ?= "UNASSIGNED"/MACHINE ?= "'"$MACHINE"'" /g' local.conf \
+#Fixup Distro
 cd $YOCTO_DIR/build/conf \
-        && sed -i 's/PARALLEL_MAKE = "-j 4"/ /g' local.conf \
-        && sed -i 's/BB_NUMBER_THREADS = "4"/ /g' local.conf
+    && sed -i 's/DISTRO ?= "yogurt"/DISTRO ?= "yogurt-vendor" /g' local.conf \
+
+#fixup issue with FSL EULA
+cd $YOCTO_DIR/build/conf \
+    && echo FSL_EULA_FILE="${BSPDIR}/sources/meta-fsl-bsp-release/imx/EULA.txt" >> local.conf
+
+#add the default build parallelization settings
+echo "PARALLEL_MAKE = "-j 16"" >>  $YOCTO_DIR/build/conf/local.conf
+echo "BB_NUMBER_THREADS = "16"" >>  $YOCTO_DIR/build/conf/local.conf
 
 #increase open file descriptors for the build
 
