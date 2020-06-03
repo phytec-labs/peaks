@@ -30,7 +30,7 @@ echo "Installing host packages for build"
 export DEBIAN_FRONTEND=noninteractive
 sudo dpkg --add-architecture i386
 sudo apt-get update
-sudo apt-get install -y cpio gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev libsdl1.2-dev xterm sed cvs subversion coreutils texi2html docbook-utils python-pysqlite2 help2man make gcc g++ desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev mercurial autoconf automake groff curl asciidoc u-boot-tools repo
+sudo apt-get install -y repo gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint3 xterm
 
 # set up git
 git config --global user.email "phytec-labs@phytec.com"
@@ -92,9 +92,9 @@ cd $YOCTO_DIR/build/conf \
 
 # add commented line in local.conf.sample (for easy acceptable NXP EULA)
 echo "" >> $YOCTO_DIR/build/conf/local.conf
-echo "# Uncomment to accept NXP EULA" >> $YOCTO_DIR/build/conf/local.conf
+echo "# By building this BSP you are accepting the NXP EULA" >> $YOCTO_DIR/build/conf/local.conf
 echo "# EULA can be found under ../sources/meta-freescale/EULA" >> $YOCTO_DIR/build/conf/local.conf
-echo "#ACCEPT_FSL_EULA = \"1\""  >> $YOCTO_DIR/build/conf/local.conf
+echo "ACCEPT_FSL_EULA = \"1\""  >> $YOCTO_DIR/build/conf/local.conf
 
 # add BSPDIR variable in bblayers.conf.sample (needed by recipes of NXP)
 sed -e '9iBSPDIR := "${OEROOT}/../.."' -i $YOCTO_DIR/build/conf/bblayers.conf
@@ -129,9 +129,6 @@ cd $YOCTO_DIR/build/conf \
 cd $YOCTO_DIR/build/conf \
     && sed -i 's/DISTRO ?= "yogurt"/DISTRO ?= "yogurt-vendor" /g' local.conf \
 
-#fixup issue with FSL EULA
-#cd $YOCTO_DIR/build/conf \
-#    && echo "FSL_EULA_FILE=\""\${BSPDIR}/sources/meta-fsl-bsp-release/imx/EULA.txt\""" >> local.conf
 
 #add the default build parallelization settings
 echo "PARALLEL_MAKE = \""-j 16\""" >>  $YOCTO_DIR/build/conf/local.conf
