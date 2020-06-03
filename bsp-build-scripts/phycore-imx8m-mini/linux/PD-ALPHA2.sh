@@ -2,13 +2,14 @@
 #PD20.1.0.sh
 
 #########################################
-#           imx8m-mini  ALPHA2.sh           # 
+#       imx8m-mini  PD-ALPHA2.sh        # 
 #########################################
 
 
 #variables - these can be changed to build different images or machines
 MACHINE=phyboard-polis-imx8mm-2
 IMAGE=phytec-headless-image
+DISTRO=yogurt-vendor
 BSP_VERSION=ALPHA2
 MANIFEST_URL=git://git.phytec.de/phy2octo
 MANIFEST_BRANCH=imx8mm
@@ -27,10 +28,16 @@ echo "*** The current image target is: $IMAGE"
 #install the specific host packages for the build
 echo "Installing host packages for build"
 
+#fix for tzdata package not allowing unattended installation...
+#this will force your timezone - change this if you want to
+
+echo " Forcing timzeone to American EST to fix issue with tzdata package not allowing unattended install"
+ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+
 export DEBIAN_FRONTEND=noninteractive
 sudo dpkg --add-architecture i386
 sudo apt-get update
-sudo apt-get install -y repo gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint3 xterm
+sudo apt-get install -y curl repo gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint3 xterm
 
 # set up git
 git config --global user.email "phytec-labs@phytec.com"
@@ -50,7 +57,7 @@ cd yocto_imx
 touch /home/$USER_NAME/.bashrc
 export YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/yocto_imx"
 
-# repo project
+# pull BSP manifest
 echo "initializing repo tool..."
 cd $YOCTO_DIR
 git config --global color.ui false
@@ -59,12 +66,13 @@ repo sync
 export PATH="$YOCTO_DIR/sources/oe-core/bitbake/bin:$PATH"
 
 # set environment
-cd $YOCTO_DIR
+
 
 #create the templateconf for this BSP
-#run excerpt from init script from meta-phytec to create bblayers. 
-#Currently this script does not run correctly within the container so we just run it here.
+# meta-phytec/scrupts/init is not running properly inside the docker container.
+# run excerpt from init script from meta-phytec to create bblayers. 
 
+cd $YOCTO_DIR
 ROOTDIR=$YOCTO_DIR
 PHYTEC_DIR="$YOCTO_DIR/sources/meta-phytec"
 
@@ -74,11 +82,6 @@ RELEASE_NOTES="${ROOTDIR}/.repo/manifests/releasenotes/${RELEASE_UID}"
 if [ -e ${RELEASE_NOTES} ]; then
     install -pm 0644 ${RELEASE_NOTES} ${ROOTDIR}/ReleaseNotes
 fi
-
-# Folders and Readme
-
-# copy new EULA to meta-freescale
-cp ${ROOTDIR}/sources/meta-fsl-bsp-release/imx/EULA.txt ${ROOTDIR}/sources/meta-freescale/EULA
 
 #create our build directory with standard config from PHYTEC
 cd $YOCTO_DIR
@@ -99,7 +102,8 @@ echo "ACCEPT_FSL_EULA = \"1\""  >> $YOCTO_DIR/build/conf/local.conf
 # add BSPDIR variable in bblayers.conf.sample (needed by recipes of NXP)
 sed -e '9iBSPDIR := "${OEROOT}/../.."' -i $YOCTO_DIR/build/conf/bblayers.conf
 
-# add additional layers to bblayers.conf #TODO - Fix this so it will not append everytime you run the script...
+#add additional layers to bblayers.conf 
+#TODO - Fix this so it will not append everytime you run the script...
 
 echo "" >> $YOCTO_DIR/build/conf/bblayers.conf
 echo "# Adding sublayer because of \"$RELEASE_UID\" release" >> $YOCTO_DIR/build/conf/bblayers.conf
@@ -125,20 +129,16 @@ echo "" >> $YOCTO_DIR/build/conf/bblayers.conf
 #Fixup MACHINE
 cd $YOCTO_DIR/build/conf \
     && sed -i 's/MACHINE ?= "UNASSIGNED"/MACHINE ?= "'"$MACHINE"'" /g' local.conf \
+
 #Fixup Distro
 cd $YOCTO_DIR/build/conf \
-    && sed -i 's/DISTRO ?= "yogurt"/DISTRO ?= "yogurt-vendor" /g' local.conf \
+    && sed -i 's/DISTRO ?= "yogurt"/DISTRO ?= "'"$DISTRO"'" /g' local.conf \
 
 
 #add the default build parallelization settings
 echo "PARALLEL_MAKE = \""-j 16\""" >>  $YOCTO_DIR/build/conf/local.conf
 echo "BB_NUMBER_THREADS = \""16\""" >>  $YOCTO_DIR/build/conf/local.conf
-
-#increase open file descriptors for the build
-
-ulimit -n 8192
-
-echo "bitbake build environment ready. Would you like to start the build? Build will start automatically in 15 seconds"
+echo "bitbake build environment ready. Would you like to start the build? Build will start automatically in 15 seconds..."
 
 
 #build by default
