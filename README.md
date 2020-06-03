@@ -35,8 +35,8 @@ If you would simply like to build a BSP in a docker container then all you need 
 6. Build the BSP by typing `source BSP-version.sh'
 7. The BSP will build (this could take 2-12 hours depending on the BSP and your machine)
 8. Once the BSP is finished  building you can copy build images and other files to your host machine by using the `docker cp` command *on your host machine*. You will need to find and locate the images to copy using the BSP release notes (this guide does not offer that level of detail). You can typicall refer to the BSP Guide for the specific release to find the images. They are usually located in $YOCTO_DIR/build/*toolchain*/deploy/images . But that path can differ depending on the BSP, image, machine, etc. 
-9. You can detach from your build container (but keep the container running) by typing hitting ctrl and then hold P and press Q `ctrl P+Q`. Keep in mind that your container is most likely using a substantial amount of resources. You can re-attach to it at a later point (to do more builds if you want) by finding the container process ID or name - `docker ps` and then attaching to it by typing `docker attach {PID or container name}`
-10. **The Docker container is volatile! If you 'exit' or close your terminal without detaching from the container your work will be lost. You can 'commit' the state of the container to your local image. This will update your local image with the current snapshot. Keep in mind that this can take a long time if the size of the container is substantial (it will be fore some BSPs) **
+9. You can detach from your build container (but keep the container running) by typing hitting ctrl and then hold P and press Q `ctrl P+Q`. Keep in mind that your container is most likely using a substantial amount of resources so you might not want to keep them. You can re-attach to it at a later point (to do more builds if you want) by finding the container process ID or name - `docker ps` and then attaching to it by typing `docker attach {PID or container name}`. If you don't see your container try runnging `docker container ls -a` to see all the containers. You can remove a container (deleting all of your work!) by using `docker rm container_id`. Get the `container_id` by using `docker ps` or `docker container ls -a`. 
+
 
 ## Developing a Build System with Peaks
 
@@ -46,7 +46,7 @@ You can use Peaks to develop your own dockerized build system. This could be int
 You can also fork (or base your docker image on the release image) this repository and start to create your own build system based from here.
 
 ## Getting Started
-1. Install Docker on your host machine. Your host machine should be a beefy rig in order to build the BSPs quickly. Some BSPs will require more than 400GB of free space!
+1. Install Docker on your host machine. Your host machine should be a beefy rig in order to build the BSPs quickly. Some BSPs may require more than 400GB of free space!
 2. clone or fork this repo
 3. Let's assume you clone it - Clone this repo `git clone https://github.com/phytec-labs/peaks.git`
 4. Change to the bsp environment directory `cd peaks`
