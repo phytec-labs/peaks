@@ -134,6 +134,9 @@ cd $YOCTO_DIR/build/conf \
 cd $YOCTO_DIR/build/conf \
     && sed -i 's/DISTRO ?= "yogurt"/DISTRO ?= "'"$DISTRO"'" /g' local.conf \
 
+#Add fix for NXP EULA
+cd $YOCTO_DIR/build/conf \
+    && echo "FSL_EULA_FILE=\""\${BSPDIR}/sources/meta-fsl-bsp-release/imx/EULA.txt\""" >> local.conf
 
 #add the default build parallelization settings
 echo "PARALLEL_MAKE = \""-j 16\""" >>  $YOCTO_DIR/build/conf/local.conf
