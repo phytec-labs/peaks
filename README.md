@@ -1,4 +1,4 @@
- # Peaks Rainier
+ # Peaks Si
  
  * [Prerequisites](#prerequisites)
  * [Getting Started](#getting-started)
