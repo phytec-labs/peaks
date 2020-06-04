@@ -29,7 +29,7 @@ echo "Installing host packages for build"
 
 sudo dpkg --add-architecture i386
 sudo apt-get update
-sudo apt-get install -y git curl build-essential python python3 diffstat texinfo gawk chrpath dos2unix wget unzip socat doxygen gcc-multilib g++-multilib bison flex lzop u-boot-tools
+sudo apt-get install -y git curl cpio repo build-essential python python3 diffstat texinfo gawk chrpath dos2unix wget unzip socat doxygen gcc-multilib g++-multilib bison flex lzop u-boot-tools
 
 # set up git
 git config --global user.email "phytec-labs@phytec.com"
@@ -80,8 +80,8 @@ cd $YOCTO_DIR/build/conf \
 
 #remove the default build parallelization settings
 cd $YOCTO_DIR/build/conf \
-        && sed -i 's/PARALLEL_MAKE = "-j 4"/ /g' local.conf \
-        && sed -i 's/BB_NUMBER_THREADS = "4"/ /g' local.conf
+        && sed -i 's/PARALLEL_MAKE = "-j 4"/PARALLEL_MAKE = "-j 16"/g' local.conf \
+        && sed -i 's/BB_NUMBER_THREADS = "4"/BB_NUMBER_THREADS = "16"/g' local.conf
 
 #increase open file descriptors for the build
 
