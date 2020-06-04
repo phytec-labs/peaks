@@ -29,8 +29,6 @@ echo "*** The current image target is: $IMAGE"
 echo "Installing host packages for build"
 
 #fix for tzdata package not allowing unattended installation...
-#this will force your timezone - change this if you want to
-
 echo " Forcing timzeone to American EST to fix issue with tzdata package not allowing unattended install"
 ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
 
