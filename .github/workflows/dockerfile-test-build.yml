@@ -1,4 +1,4 @@
-name: Dockerfile test build
+name: Dockerfile create image test
 
 on:
     pull_request:
@@ -10,7 +10,7 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     steps:
     - uses: actions/checkout@v2
