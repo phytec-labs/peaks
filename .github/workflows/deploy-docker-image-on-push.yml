@@ -2,6 +2,8 @@ name: Build and deploy a docker image on push
 
 on:
   push:
+    branches: 
+      - 'release/**'
     paths-ignore:
     - '**.yml'
     - 'README.md'
