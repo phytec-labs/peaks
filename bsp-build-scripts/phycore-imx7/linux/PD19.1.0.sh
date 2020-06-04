@@ -67,8 +67,8 @@ cd $YOCTO_DIR/build/conf \
 
 #remove the default build parallelization settings
 cd $YOCTO_DIR/build/conf \
-	&& sed -i 's/PARALLEL_MAKE = "-j 4"/ /g' local.conf \
-	&& sed -i 's/BB_NUMBER_THREADS = "4"/ /g' local.conf
+	&& sed -i 's/PARALLEL_MAKE = "-j 4"/PARALLEL_MAKE = "-j 16"/g' local.conf \
+	&& sed -i 's/BB_NUMBER_THREADS = "4"/s/BB_NUMBER_THREADS = "16"/g' local.conf
 
 echo "bitbake build environment ready. Would you like to start the build? Build will start automatically in 15 seconds"
 
