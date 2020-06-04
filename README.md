@@ -41,7 +41,7 @@ PHYTEC-LABS provides pre-build docker images on this git repo. If you don't care
 6. Build the docker image ``docker build -t peaks:rainier `pwd` ``
 7. Run your docker container `docker run -it peaks:rainier`
 8. You will know you are in the docker container because the user will be `baker@...`
-9. In the container, browse to the BSP build script you want to build `cd bsp-build-scripts/phycore-imx7/linux/`
+9. In the container, browse to the BSP build script you want to build `cd peaks/phycore-imx7/linux/`
 10. Execute the build script `source PD19.1.0.sh`
 11. The build will take some time...
 12. Once finished you can export your built images by using any traditional method like scp, curl, etc. PHYTEC has an artifactory server and we use curl to push whatever artifacts we want up to the server and then download to whatever machine will be used to create the SD Card.
