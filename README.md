@@ -18,11 +18,11 @@
 The BSP scripts set the git config user.email and user.name values to avoid errors when using repo and bitbake. They are currently set to dummy values such as phytec-labs@phytec.com and bitbaker (name). If you were to run the BSP scripts outside of a docker container, they will most likely change your host's git settings. So be sure to run the scripts in a docker container. 
 
 ## Build from PHYTEC-LABS Docker Registry
-PHYTEC-LABS provides pre-build docker images on this git repo. If you don't care about creating your own local docker image from the dockerfile then you can just browse the available Docker Images here: https://github.com/phytec-labs/peaks/packages and create a docker container.
+PHYTEC-LABS provides pre-build docker images on this git repo. If you don't care about creating your own local docker image from the dockerfile then you can just browse the available Docker Images here: https://hub.docker.com/orgs/phyteclabs/repositories and create a docker container.
 
-1. Browse (or see above lists) to https://github.com/phytec-labs/peaks/packages and explore the peaks (releases). It may be that the latest release is fine for you. Note the name of the release (e.g. 'rainier', or 'si', etc.)
+1. Browse (or see above lists) to https://hub.docker.com/orgs/phyteclabs/repositories and explore the peaks (releases). It may be that the latest release is fine for you. Note the name of the release (e.g. 'rainier', or 'si', etc.)
 2. Install docker on your host machine (this machine should be powerfull and have >200GB of free space). https://docs.docker.com/get-docker/
-3. On your host machine run the docker container with the command docker run -it --name my-container-name --ulimit nofile=8192:8192 docker.pkg.github.com/phytec-labs/peaks/chosen_peak:latest (or specific tag) (you may need to use sudo). chosen_peak should be the peaks release you want to use(rainier, si, etc.). Note we set the ulimit here because in some instances this has been seen to be very low within a docker container (so we force it here).
+3. On your host machine run the docker container with the command docker run -it --name my-container-name --ulimit nofile=8192:8192 phyteclabs/chosen_peak:latest (or specific tag) (you may need to use sudo). chosen_peak should be the peaks release you want to use(rainier, si, etc.). Note we set the ulimit here because in some instances this has been seen to be very low within a docker container (so we force it here).
 4. The docker image will download and then you will be launched into a docker container. You will know this because your command line will change to show baker@xxxxx as the user.
 5. Browse the bsp-build-scripts folder and find the BSP that you would like to build.
 6. Build the BSP by typing `source BSP-version.sh'
