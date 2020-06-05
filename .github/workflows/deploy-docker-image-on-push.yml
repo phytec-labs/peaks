@@ -15,16 +15,11 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Docker Login
-      uses: azure/docker-login@v1
+    - uses: docker/build-push-action@v1.1.0
       with:
-        login-server: docker.pkg.github.com
-        username: $GITHUB_ACTOR
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag docker.pkg.github.com/${{github.repository}}/si:latest
-    - name: Push Docker Image  
-      run: docker push docker.pkg.github.com/${{github.repository}}/si:latest
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: phyteclabs/si
+        tags: latest
 
 
