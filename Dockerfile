@@ -21,7 +21,7 @@ FROM ubuntu:18.04
 #set up our release labels
 LABEL vendor="PHYTEC"
 LABEL distribution="Peaks"
-LABEL description="PHYTEC Peaks Build System. A build system for building a subset of PHYTEC BSPS in a docker container"
+LABEL description="PHYTEC Peaks Build System. A build system for building PHYTEC BSPS in a docker container"
 LABEL version="2.0"
 LABEL version.codename="Si"
 
