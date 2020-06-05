@@ -54,7 +54,7 @@ ENV DIR "/home/baker"
 WORKDIR $DIR
 
 
-#Copy current supported build scripts
+#Copy current supported build scripts from repo
 COPY bsp-build-scripts/ bsp-build-scripts 
 RUN sudo chown -R baker bsp-build-scripts/
 
