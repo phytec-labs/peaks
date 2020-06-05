@@ -30,6 +30,7 @@ echo "Installing host packages for build"
 
 #fix for tzdata package not allowing unattended installation...
 echo " Forcing timzeone to American EST to fix issue with tzdata package not allowing unattended install"
+mkdir /etc/localtime
 ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
 
 export DEBIAN_FRONTEND=noninteractive
