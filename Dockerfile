@@ -32,7 +32,7 @@ RUN ln -sf bash /bin/sh
 RUN echo "Installing dependencies"
 RUN DEBIAN_FRONTEND=noninteractive dpkg --add-architecture i386 \
     && apt -yqq update \
-    && apt-get install -yqq locales sudo
+    && apt-get install -yqq locales sudo vim bison flex exuberant-ctags
 
 # locales issue fix
 RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
