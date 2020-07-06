@@ -10,7 +10,7 @@
 MACHINE=phyboard-polis-imx8mm-2
 IMAGE=phytec-headless-image
 DISTRO=yogurt-vendor
-BSP_VERSION=ALPHA2
+BSP_VERSION=PD-BSP-Yocto-FSL-i.MX8MM-PD20.1.0
 MANIFEST_URL=git://git.phytec.de/phy2octo
 MANIFEST_BRANCH=imx8mm
 MANIFEST_FILE=PD-BSP-Yocto-FSL-i.MX8MM-PD20.1.0.xml
@@ -44,17 +44,14 @@ git config --global user.name "$USER_NAME"
 
 # set up BSP directories
 echo "Setting up BSP directory structure"
-mkdir /home/$USER_NAME/PHYTEC_BSPs
-cd /home/$USER_NAME/PHYTEC_BSPs
-mkdir -p yocto_imx
-mkdir -p yocto_dl
-YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/yocto_imx"
-cd yocto_imx
+mkdir /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
+mkdir /home/$USER_NAME/PHYTEC_BSPs/downloads
+cd /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
+export YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION"
 
 
 #make sure there is a bashrc file and add a YOCTO_DIR variable to make things easier later
 touch /home/$USER_NAME/.bashrc
-export YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/yocto_imx"
 
 # pull BSP manifest
 echo "initializing repo tool..."

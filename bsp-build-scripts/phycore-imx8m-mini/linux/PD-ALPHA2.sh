@@ -1,5 +1,4 @@
 #!/bin/bash
-#PD20.1.0.sh
 
 #########################################
 #       imx8m-mini  PD-ALPHA2.sh        # 
@@ -10,7 +9,7 @@
 MACHINE=phyboard-polis-imx8mm-2
 IMAGE=phytec-headless-image
 DISTRO=yogurt-vendor
-BSP_VERSION=ALPHA2
+BSP_VERSION=PD-BSP-Yocto-FSL-i.MX8MM-ALPHA2
 MANIFEST_URL=git://git.phytec.de/phy2octo
 MANIFEST_BRANCH=imx8mm
 MANIFEST_FILE=PD-BSP-Yocto-FSL-i.MX8MM-ALPHA2.xml
@@ -44,17 +43,14 @@ git config --global user.name "$USER_NAME"
 
 # set up BSP directories
 echo "Setting up BSP directory structure"
-mkdir /home/$USER_NAME/PHYTEC_BSPs
-cd /home/$USER_NAME/PHYTEC_BSPs
-mkdir -p yocto_imx
-mkdir -p yocto_dl
-YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/yocto_imx"
-cd yocto_imx
+mkdir /home/$USER_NAME/PHYTEC_BSPs/downloads
+mkdir /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
+cd /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
+YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION"
 
 
 #make sure there is a bashrc file and add a YOCTO_DIR variable to make things easier later
 touch /home/$USER_NAME/.bashrc
-export YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/yocto_imx"
 
 # pull BSP manifest
 echo "initializing repo tool..."
@@ -89,7 +85,7 @@ TEMPLATECONF=$YOCTO_DIR/sources/meta-phytec/conf MACHINE=phyboard-polis-imx8mm-2
 # Modify local conf and bblayers for BSP
 cd $YOCTO_DIR/build/conf \
     && sed -i '/downloads/d' $YOCTO_DIR/build/conf/local.conf \
-    && echo "DL_DIR = \"/home/$USER_NAME/PHYTEC_BSPs/yocto_dl\"" >> $YOCTO_DIR/build/conf/local.conf
+    && echo "DL_DIR = \"/home/$USER_NAME/PHYTEC_BSPs/downloads\"" >> $YOCTO_DIR/build/conf/local.conf
 
 
 # add commented line in local.conf.sample (for easy acceptable NXP EULA)
