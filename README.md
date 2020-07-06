@@ -1,5 +1,8 @@
- # Peaks Si
- 
+ # Peaks Si-next
+
+This branch contains experimental and not-yet 
+released features.  
+
  * [Prerequisites](#prerequisites)
  * [Getting Started](#getting-started)
    * [Some words of caution:](#some-words-of-caution)
