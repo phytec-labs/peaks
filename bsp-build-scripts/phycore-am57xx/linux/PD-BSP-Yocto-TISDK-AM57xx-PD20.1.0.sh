@@ -2,14 +2,14 @@
 #PD20.1.0.sh
 
 #########################################
-#           am57xx  PD20.1.0.sh           # 
+# am57xx PD-BSP-Yocto-TISDK-AM57xx-PD20.1.0          # 
 #########################################
 
 
 #variables - these can be changed to build different images or machines
 MACHINE=am57xx-phycore-kit
 IMAGE=arago-core-tisdk-bundle
-BSP_VERSION=PD20.1.0
+BSP_VERSION=PD-BSP-Yocto-TISDK-AM57xx-PD20.1.0
 MANIFEST_URL=https://stash.phytec.com/scm/pub/manifests-phytec.git
 MANIFEST_BRANCH=am57xx
 MANIFEST_FILE=PD20.1.0.xml
@@ -37,12 +37,10 @@ git config --global user.name "$USER_NAME"
 
 # set up BSP directories
 echo "Setting up BSP directory structure"
-mkdir /home/$USER_NAME/PHYTEC_BSPs
-cd /home/$USER_NAME/PHYTEC_BSPs
-mkdir -p yocto_ti
-mkdir -p yocto_dl
-YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/yocto_ti"
-cd yocto_ti
+mkdir /home/$USER_NAME/PHYTEC_BSPs/downloads
+mkdir /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
+cd /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
+YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION"
 
 
 #set up additional linaro toolchain for TI
@@ -57,7 +55,6 @@ cd $YOCTO_DIR
 
 #make sure there is a bashrc file and add a YOCTO_DIR variable to make things easier later
 touch /home/$USER_NAME/.bashrc
-export YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/yocto_ti"
 
 # repo project
 echo "initializing repo tool..."
@@ -76,7 +73,7 @@ TEMPLATECONF=$YOCTO_DIR/sources/meta-phytec/meta-phytec-ti/conf MACHINE=$MACHINE
 cd $YOCTO_DIR/build/conf \
     && echo "TOOLCHAIN_BASE = \"$YOCTO_DIR/toolchain\"" >> $YOCTO_DIR/build/conf/local.conf \
     && sed -i '/downloads/d' $YOCTO_DIR/build/conf/local.conf \
-    && echo "DL_DIR = \"/home/$USER_NAME/PHYTEC_BSPs/yocto_dl\"" >> $YOCTO_DIR/build/conf/local.conf
+    && echo "DL_DIR = \"/home/$USER_NAME/PHYTEC_BSPs/downloads\"" >> $YOCTO_DIR/build/conf/local.conf
 
 #remove the default build parallelization settings
 cd $YOCTO_DIR/build/conf \
