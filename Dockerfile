@@ -16,14 +16,14 @@
 #Current maintainer: Nick McCarty nmccarty@phytec.com
 
 # pull basse ubuntu image
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 #set up our release labels
 LABEL vendor="PHYTEC"
 LABEL distribution="Peaks"
-LABEL description="PHYTEC Peaks Build System. A build system for building PHYTEC BSPS in a docker container"
-LABEL version="1.0"
-LABEL version.codename="Rainier"
+LABEL description="PHYTEC Peaks Build System v2.0 A build system for building a subset of PHYTEC BSPS in a docker container"
+LABEL version="2.0"
+LABEL version.codename="Si"
 
 # set up bash instead of dash
 RUN ln -sf bash /bin/sh
@@ -32,7 +32,7 @@ RUN ln -sf bash /bin/sh
 RUN echo "Installing dependencies"
 RUN DEBIAN_FRONTEND=noninteractive dpkg --add-architecture i386 \
     && apt -yqq update \
-    && apt-get install -yqq locales sudo
+    && apt-get install -yqq locales sudo vim bison flex exuberant-ctags git
 
 # locales issue fix
 RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
@@ -54,12 +54,13 @@ ENV DIR "/home/baker"
 WORKDIR $DIR
 
 
-#Copy current supported build scripts from repo
+#Copy current supported build scripts
 COPY bsp-build-scripts/ bsp-build-scripts 
 RUN sudo chown -R baker bsp-build-scripts/
 
 #make scripts executable
 RUN find bsp-build-scripts/ -type f -iname "*.sh" -exec chmod +x {} \;
+
 
 
 

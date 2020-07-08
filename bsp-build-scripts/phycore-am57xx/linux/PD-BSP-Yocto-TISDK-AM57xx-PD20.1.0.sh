@@ -1,23 +1,25 @@
 #!/bin/bash
-#PD19.1.0.sh
+#PD20.1.0.sh
 
 #########################################
-#           iMX7  PD19.1.0.sh           # 
+# am57xx PD-BSP-Yocto-TISDK-AM57xx-PD20.1.0          # 
 #########################################
 
 
 #variables - these can be changed to build different images or machines
-MACHINE=imx7d-phyboard-zeta-004
-IMAGE=fsl-image-validation-imx
-BSP_VERSION=BSP-Yocto-FSL-iMX7-PD19.1.0
+MACHINE=am57xx-phycore-kit
+IMAGE=arago-core-tisdk-bundle
+BSP_VERSION=PD-BSP-Yocto-TISDK-AM57xx-PD20.1.0
 MANIFEST_URL=https://stash.phytec.com/scm/pub/manifests-phytec.git
-MANIFEST_BRANCH=imx7
-MANIFEST_FILE=BSP-Yocto-FSL-iMX7-PD19.1.0.xml
+MANIFEST_BRANCH=am57xx
+MANIFEST_FILE=PD20.1.0.xml
 
 USER_NAME=$(whoami)
 
+bash /home/$USER_NAME/bsp-build-scripts/versions.sh
+
 echo "*** Setting up the build environment. Your user will need sudo access!"
-echo "*** Building iMX7 $BSP_VERSION BSP."
+echo "*** Building am57xx $BSP_VERSION BSP."
 echo "*** BSP will be built using the current user: $USER_NAME"
 echo "*** The current machine target is: $MACHINE"
 echo "*** The current image target is: $IMAGE"
@@ -27,7 +29,7 @@ echo "Installing host packages for build"
 
 sudo dpkg --add-architecture i386
 sudo apt-get update
-sudo apt-get install -y libx11-dev x11proto-core-dev vim openssh-client curl ssh sudo git repo python3 build-essential python diffstat texinfo gawk chrpath dos2unix wget unzip socat doxygen libc6-dev libncurses5:i386 libstdc++6:i386 zlib1g:i386 lib32stdc++6 lib32ncurses5 lib32z1 libc6-dev-i386 cpio gcc-multilib git-core xz-utils
+sudo apt-get install -y git curl cpio repo build-essential python python3 diffstat texinfo gawk chrpath dos2unix wget unzip socat doxygen gcc-multilib g++-multilib bison flex lzop u-boot-tools
 
 # set up git
 git config --global user.email "phytec-labs@phytec.com"
@@ -35,13 +37,24 @@ git config --global user.name "$USER_NAME"
 
 # set up BSP directories
 echo "Setting up BSP directory structure"
-mkdir -p /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
 mkdir -p /home/$USER_NAME/PHYTEC_BSPs/downloads
+mkdir -p /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
+cd /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
 YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION"
+
+
+#set up additional linaro toolchain for TI
+mkdir toolchain
+cd toolchain
+wget https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz
+tar -Jxvf gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz -C $YOCTO_DIR/toolchain
+rm gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz
+cd $YOCTO_DIR
+
+
 
 #make sure there is a bashrc file and add a YOCTO_DIR variable to make things easier later
 touch /home/$USER_NAME/.bashrc
-export YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION"
 
 # repo project
 echo "initializing repo tool..."
@@ -52,24 +65,29 @@ repo sync
 export PATH="$YOCTO_DIR/sources/oe-core/bitbake/bin:$PATH"
 
 # set environment
-cd $YOCTO_DIR && TEMPLATECONF=$YOCTO_DIR/sources/meta-phytec/meta-phytec-fsl/conf source sources/poky/oe-init-build-env build
+cd $YOCTO_DIR
+TEMPLATECONF=$YOCTO_DIR/sources/meta-phytec/meta-phytec-ti/conf MACHINE=$MACHINE source sources/oe-core/oe-init-build-env build
 
 # change download location & machine
 # accept EULA for NXP/FSL BSP
 cd $YOCTO_DIR/build/conf \
-    && echo 'ACCEPT_FSL_EULA = "1"' >> $YOCTO_DIR/build/conf/local.conf \
+    && echo "TOOLCHAIN_BASE = \"$YOCTO_DIR/toolchain\"" >> $YOCTO_DIR/build/conf/local.conf \
     && sed -i '/downloads/d' $YOCTO_DIR/build/conf/local.conf \
     && echo "DL_DIR = \"/home/$USER_NAME/PHYTEC_BSPs/downloads\"" >> $YOCTO_DIR/build/conf/local.conf
 
 #remove the default build parallelization settings
 cd $YOCTO_DIR/build/conf \
-	&& sed -i 's/PARALLEL_MAKE = "-j 4"/PARALLEL_MAKE = "-j 16"/g' local.conf \
-	&& sed -i 's/BB_NUMBER_THREADS = "4"/BB_NUMBER_THREADS = "16"/g' local.conf
+        && sed -i 's/PARALLEL_MAKE = "-j 4"/PARALLEL_MAKE = "-j 16"/g' local.conf \
+        && sed -i 's/BB_NUMBER_THREADS = "4"/BB_NUMBER_THREADS = "16"/g' local.conf
+
+#increase open file descriptors for the build
+
+ulimit -n 8192
 
 echo "bitbake build environment ready. Would you like to start the build?"
 
 
-#don't build by default
+#do not build by default
 BUILD='n'
 YES='y'
 
@@ -78,20 +96,19 @@ BUILD=${BUILD:-n}
 
 if [[ $BUILD == 'y' ]];
 then
-	echo "starting the build. This may take a while..."
-	# bitbake build
-	cd $YOCTO_DIR/build \
-    	&& machine=$MACHINE bitbake $IMAGE
+        echo "starting the build. This may take a while..."
+        # bitbake build
+        cd $YOCTO_DIR/build \
+        && machine=$MACHINE bitbake $IMAGE
 
 echo -e "\n\n\n\nYour build is complete. If build was sucessfull your images should be in build/tmp/deploy/images \n\n\n"
 echo -e "\n\nIf you would like to build later you can re-initialize the bitbake environment by entering \n
 cd $YOCTO_DIR && TEMPLATECONF=$YOCTO_DIR/sources/meta-phytec/meta-phytec-fsl/conf source sources/poky/oe-init-build-env build \n
 And then entering your bitbake command. \n\n\n The bitbake command used for this build was: \n
 cd $YOCTO_DIR/build && machine=$MACHINE bitbake $IMAGE \n"
-fi
-echo -e "\n\n If you would like to build later you can re-initialize the bitbake environment by entering \n
+else
+    echo -e "\n\n If you would like to build later you can re-initialize the bitbake environment by entering \n
 cd $YOCTO_DIR && TEMPLATECONF=$YOCTO_DIR/sources/meta-phytec/meta-phytec-fsl/conf source sources/poky/oe-init-build-env build \n
 And then entering your bitbake command. \n\n\n The bitbake command used for this build was: \n
 cd $YOCTO_DIR/build && machine=$MACHINE bitbake $IMAGE \n"
-
-
+fi
