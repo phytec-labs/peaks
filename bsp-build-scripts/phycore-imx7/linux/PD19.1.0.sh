@@ -73,8 +73,8 @@ echo "bitbake build environment ready. Would you like to start the build?"
 BUILD='n'
 YES='y'
 
-read -t 15 -p "Enter y for yes or n for no [y]: " BUILD
-BUILD=${BUILD:-y}
+read -t 15 -p "Enter y for yes or n for no [n]: " BUILD
+BUILD=${BUILD:-n}
 
 if [[ $BUILD == 'y' ]];
 then
