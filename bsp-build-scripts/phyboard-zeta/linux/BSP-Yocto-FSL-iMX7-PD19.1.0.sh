@@ -1,1 +1,0 @@
-../../phycore-imx7/linux/BSP-Yocto-FSL-iMX7-PD19.1.0.sh
