@@ -60,6 +60,15 @@ repo init -u $MANIFEST_URL -b $MANIFEST_BRANCH -m $MANIFEST_FILE
 repo sync
 export PATH="$YOCTO_DIR/sources/oe-core/bitbake/bin:$PATH"
 
+#Apply fixups
+#ISSUE-#30 https://github.com/phytec-labs/peaks/issues/30
+#PD-BSP-Yocto-FSL-i.MX8MM-ALPHA2.sh fails when Host OS is using kernel > 4.15
+cd /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION/sources/poky 
+curl -O "https://artifactory.phytec.com/artifactory/fixups/thud/poky/0001-wic-filemap-If-FIGETBSZ-iotctl-fail-failback-to-os.s.patch"
+git am 0001-wic-filemap-If-FIGETBSZ-iotctl-fail-failback-to-os.s.patch
+
+
+
 # set environment
 
 
