@@ -43,11 +43,9 @@ git config --global user.name "$USER_NAME"
 
 # set up BSP directories
 echo "Setting up BSP directory structure"
-mkdir /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
-mkdir /home/$USER_NAME/PHYTEC_BSPs/downloads
-cd /home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION
 export YOCTO_DIR="/home/$USER_NAME/PHYTEC_BSPs/$MANIFEST_BRANCH/$BSP_VERSION"
-
+mkdir -p $YOCTO_DIR
+mkdir -p /home/$USER_NAME/PHYTEC_BSPs/downloads
 
 #make sure there is a bashrc file and add a YOCTO_DIR variable to make things easier later
 touch /home/$USER_NAME/.bashrc
@@ -145,12 +143,13 @@ YES='y'
 read -t 15 -p "Enter y for yes or n for no [n]: " BUILD
 BUILD=${BUILD:-n}
 
+cd $YOCTO_DIR/build
+
 if [[ $BUILD == 'y' ]];
 then
         echo "starting the build. This may take a while..."
         # bitbake build
-        cd $YOCTO_DIR/build \
-        && machine=$MACHINE bitbake $IMAGE
+        machine=$MACHINE bitbake $IMAGE
 
 echo -e "\n\n\n\nYour build is complete. If build was sucessfull your images should be in build/tmp/deploy/images \n\n\n"
 echo -e "\n\nIf you would like to build later you can re-initialize the bitbake environment by entering \n
