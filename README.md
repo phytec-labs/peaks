@@ -29,6 +29,9 @@ PHYTEC-LABS provides pre-build docker images on this git repo. If you don't care
 
 1. Browse (or see above lists) to https://hub.docker.com/orgs/phyteclabs/repositories and explore the peaks (releases). It may be that the latest release is fine for you. You can also specify specific relases by the use of the SHA commit ID. 
 2. Install docker on your host machine. https://docs.docker.com/get-docker/
+
+If you already have Peaks on your machine and want to use the latest image, make sure to run `sudo docker pull phyteclabs/peaks:latest` to pull the latest Docker image before starting your container.
+
 3. On your host machine run the docker container with the command docker run -it --name my-container-name --ulimit nofile=8192:8192 phyteclabs/peaks:latest (you may need to use sudo). Note we set the ulimit here because in some instances this has been seen to be very low within a docker container (so we force it here). You can also pull specific releases of Peaks by using the release tag you want. 
 4. The docker image will download and then you will be launched into a docker container. You will know this because your command line will change to show baker@xxxxx as the user.
 5. Browse the bsp-build-scripts folder and find the BSP that you would like to build.
